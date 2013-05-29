@@ -4,12 +4,14 @@ class Cat
   include Callbackable
 
   attr_accessor :name, :colour
-
-  callback :after, :eat, :play
+  attr_reader :method_calls
   
+  callback :after, :eat, :play
+  callback :before, :catch_mouse, :hiss  
   def initialize(name, colour)
     @name = name
     @colour = colour
+    @method_calls = {}
   end
     
   def sleep
@@ -17,12 +19,28 @@ class Cat
   end
 
   def eat
-    puts "#{@name} the cat  is eating"
+    @method_calls[__method__] = Time.now
   end
 
   def play
-    puts "#{@name} the cat  is playing"
+    @method_calls[__method__] = Time.now
   end
- 
+  
+  def purr
+    @method_calls[__method__] = Time.now
+  end
+
+  def run
+    @method_calls[__method__] = Time.now
+  end
+  
+  def hiss
+    @method_calls[__method__] = Time.now
+  end
+
+  def catch_mouse
+    @method_calls[__method__] = Time.now
+  end
+  
   run_callbacks
 end
