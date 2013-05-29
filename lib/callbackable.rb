@@ -10,8 +10,26 @@ module Callbackable
   def self.included(base)
 
     base.class_eval do 
-     
       @@_method_chain = Hash.new
+    
+      # show current_method_chain
+      def self.method_chain
+        @@_method_chain
+      end
+
+      # allows to add a callback to already initialized class
+      # TODO: document
+      def self.add_callback(event, method, callback)
+        callback(event, method, callback)
+        alias_method new_method_name(method), method
+        undef_method method 
+          
+        define_method method do
+          call_method_chain(method)
+        end
+      end
+
+      private
 
       # Register new callback 
       def self.callback(event, method, callback)
@@ -37,8 +55,6 @@ module Callbackable
           end
         end
       end
-
-      private
 
       def self.new_method_name(method)
         "#{method}_#{SALT}"

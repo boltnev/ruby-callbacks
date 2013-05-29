@@ -28,4 +28,26 @@ describe Cat do
     cat.catch_mouse
     cat.method_calls[:hiss].should be < @cat.method_calls[:catch_mouse]
   end
+
+  context "with new callback" do
+  
+    subject(:cat) do 
+      Cat.add_callback :after, :sleep, :eat
+      @cat = Cat.new("Kitty", "black")
+    end
+
+    it "eat after sleep" do
+      cat.sleep
+      cat.method_calls[:sleep].should be < @cat.method_calls[:eat]
+      cat.method_calls[:eat].should be < @cat.method_calls[:play]
+    end
+    
+  end
+
+  context "with 2 callbacks on one method" do
+    subject (:cat) do 
+      Cat.add_callback :after, :eat, :purr
+      @cat = Cat.new("Kitty", "black")
+    end
+  end
 end

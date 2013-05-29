@@ -8,6 +8,7 @@ class Cat
   
   callback :after, :eat, :play
   callback :before, :catch_mouse, :hiss  
+  
   def initialize(name, colour)
     @name = name
     @colour = colour
@@ -15,7 +16,7 @@ class Cat
   end
     
   def sleep
-    puts "#{@name} the cat is sleeping"
+    @method_calls[__method__] = Time.now
   end
 
   def eat
