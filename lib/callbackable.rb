@@ -18,7 +18,7 @@ module Callbackable
       # allows to add a callback to already initialized class
       # TODO: document
       def self.add_callback(event, method, callback)
-        if callback_exists? method 
+        if callbacks_exist? method 
           callback(event, method, callback)
         else
           callback(event, method, callback)
@@ -42,6 +42,16 @@ module Callbackable
         end
       end
       
+      # Are callback *callback* on this method already exists?
+      def self.callback_exists?(method, callback)
+        !@@_method_chain[method.to_sym].detect{|c| c == callback.to_sym }.nil?
+      end
+      
+      # Are callbacks on this method already exists?
+      def self.callbacks_exist?(method)
+        !@@_method_chain[method.to_sym].nil?
+      end
+      
       private
 
       # Register new callback 
@@ -54,11 +64,7 @@ module Callbackable
         alias_method method, new_method_name(method)
         @@_method_chain[method] = nil
       end
-      # Are callbacks on this method already exists?
-      def self.callback_exists?(method)
-        !@@_method_chain[method.to_sym].nil?
-      end
-
+      
       # run all callbacks. 
       # call it after all methods defined
       # For example

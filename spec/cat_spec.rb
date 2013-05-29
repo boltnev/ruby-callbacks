@@ -18,11 +18,16 @@ describe Cat do
     
     cat.method_calls[:purr].should be < @cat.method_calls[:run]
   end
-
-  it "class could show if callback exists" do
-    expect(cat.class.callback_exists? "eat").to be true 
-    expect(cat.class.callback_exists? "purr").to be false  
-    expect(cat.class.callback_exists? "catch_mouse").to be true 
+  
+  it "class could show if callbacks exist on given method" do
+    expect(cat.class.callbacks_exist? "eat").to be true 
+    expect(cat.class.callbacks_exist? "purr").to be false  
+    expect(cat.class.callbacks_exist? "catch_mouse").to be true 
+  end
+  
+  it "class could show if such callback exists on given method " do
+    expect(cat.class.callback_exists? "eat", "play").to be true 
+    expect(cat.class.callback_exists? "eat", "purr").to be false  
   end
   
   it "should play after eat" do
@@ -45,7 +50,7 @@ describe Cat do
     end
     
     it "class could show if callback exists" do
-      expect(cat.class.callback_exists? "sleep").to be true  
+      expect(cat.class.callbacks_exist? "sleep").to be true  
     end
     
     it "eat after sleep" do
@@ -67,8 +72,8 @@ describe Cat do
     end
 
     it "class could show if callback exists" do
-      expect(cat.class.callback_exists? "eat").to be true 
-      expect(cat.class.callback_exists? "purr").to be false  
+      expect(cat.class.callbacks_exist? "eat").to be true 
+      expect(cat.class.callbacks_exist? "purr").to be false  
     end
 
     it "purrs and plays after eat" do
@@ -88,17 +93,17 @@ describe Cat do
 
     it "callbacks can be removed" do
       cat.class.del_callback(:eat)
-      expect(cat.class.callback_exists? :eat).to be false 
+      expect(cat.class.callbacks_exist? :eat).to be false 
       
       # return default Cat callback 
       # for other test correctness 
       cat.class.add_callback(:after, :eat, :play)
       
-      expect(cat.class.callback_exists? :catch_mouse).to be true 
+      expect(cat.class.callbacks_exist? :catch_mouse).to be true 
       
       Cat.del_callback(:catch_mouse, :run)
 
-      expect(cat.class.callback_exists? :catch_mouse).to be true 
+      expect(cat.class.callbacks_exist? :catch_mouse).to be true 
 
     end    
   
