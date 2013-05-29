@@ -18,6 +18,12 @@ describe Cat do
     
     cat.method_calls[:purr].should be < @cat.method_calls[:run]
   end
+
+  it "class could show if callback exists" do
+    expect(cat.class.callback_exists? "eat").to be true 
+    expect(cat.class.callback_exists? "purr").to be false  
+    expect(cat.class.callback_exists? "catch_mouse").to be true 
+  end
   
   it "should play after eat" do
     cat.eat
@@ -35,19 +41,35 @@ describe Cat do
       Cat.add_callback :after, :sleep, :eat
       @cat = Cat.new("Kitty", "black")
     end
-
+    
+    it "class could show if callback exists" do
+      expect(cat.class.callback_exists? "sleep").to be true  
+    end
+    
     it "eat after sleep" do
       cat.sleep
       cat.method_calls[:sleep].should be < @cat.method_calls[:eat]
       cat.method_calls[:eat].should be < @cat.method_calls[:play]
     end
     
-  end
+    context "with 2 callbacks on one method" do
+      subject (:cat) do 
+        Cat.add_callback :after, :eat, :purr
+        @cat = Cat.new("Kitty", "black")
+      end
 
-  context "with 2 callbacks on one method" do
-    subject (:cat) do 
-      Cat.add_callback :after, :eat, :purr
-      @cat = Cat.new("Kitty", "black")
+      it "class could show if callback exists" do
+        expect(cat.class.callback_exists? "eat").to be true 
+        expect(cat.class.callback_exists? "purr").to be false  
+      end
+
+      it "purrs and plays after eat" do
+        cat.eat
+        cat.method_calls[:eat] < cat.method_calls[:purr]
+        cat.method_calls[:eat] < cat.method_calls[:play]
+        cat.method_calls[:purr] < cat.method_calls[:play] 
+      end
     end
+  
   end
 end
