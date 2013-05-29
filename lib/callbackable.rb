@@ -1,5 +1,3 @@
-require 'debugger'
-#TODO :debugger
 module Callbackable
 
   class UnknownEventException < Exception; end
@@ -33,6 +31,17 @@ module Callbackable
         end
       end
 
+      # Delete existing callback
+      # if callback == nil deletes all callbacks on given *method*
+      def self.del_callback(method, callback = nil)
+        if callback
+          @@_method_chain[method].delete_if{|c| c == callback }
+          del_all_callbacks(method) if @@_method_chain[method].size == 1
+        else
+          del_all_callbacks(method)
+        end
+      end
+      
       private
 
       # Register new callback 
@@ -40,11 +49,11 @@ module Callbackable
         reg_callback(event.to_sym, method.to_sym, callback.to_sym)
       end
       
-      # Delete existing callback
-      # TODO: implement
-      def self.del_callback(event, method, callback)
+      def self.del_all_callbacks(method)
+        undef_method method
+        alias_method method, new_method_name(method)
+        @@_method_chain[method] = nil
       end
-      
       # Are callbacks on this method already exists?
       def self.callback_exists?(method)
         !@@_method_chain[method.to_sym].nil?
