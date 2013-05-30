@@ -78,9 +78,9 @@ describe Cat do
 
     it "purrs and plays after eat" do
       cat.eat
-      cat.method_calls[:eat] < cat.method_calls[:purr]
-      cat.method_calls[:eat] < cat.method_calls[:play]
-      cat.method_calls[:purr] < cat.method_calls[:play] 
+      cat.method_calls[:eat].should be < cat.method_calls[:purr]
+      cat.method_calls[:eat].should be < cat.method_calls[:play]
+      cat.method_calls[:play].should be < cat.method_calls[:purr] 
     end
   end
   

@@ -101,8 +101,7 @@ module Callbackable
       end
 
       def self.reg_after_callback(method, callback)
-        @@_method_chain[method].insert \
-          (@@_method_chain[method].index new_method_name(method)) + 1, callback
+        @@_method_chain[method].push callback
       end
       
       def call_method_chain(method)
