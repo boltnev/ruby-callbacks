@@ -39,6 +39,13 @@ describe Cat do
     cat.catch_mouse
     cat.method_calls[:hiss].should be < @cat.method_calls[:catch_mouse]
   end
+  
+  it "should return result of main method" do
+    a = cat.catch_mouse
+    a.should be_a_kind_of(Time)
+    a.should eq cat.method_calls[:catch_mouse]
+    a.should_not eq cat.method_calls[:hiss]
+  end
 
   context "with new callback" do
   

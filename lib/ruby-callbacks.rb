@@ -102,11 +102,14 @@ module Callbacks
       end
       
       class << self 
+        def new_method_name(method)
+          "#{method}_#{SALT}"
+        end
+        
         def method_added(method)
           if callbacks_exist?(method) && !@@_callbacks_running.include?(method)
             run_callback(method)
           end
-          #puts "#{method} => callbacked => #{@@_method_chain[method]}"
         end
         
         private
@@ -135,10 +138,6 @@ module Callbacks
           end          
         end
 
-        def new_method_name(method)
-          "#{method}_#{SALT}"
-        end
-
         def reg_callback(event, method, callback)
           raise UnknownEventException if (event != :before &&  event != :after)
           @@_method_chain[method] = [new_method_name(method)] unless @@_method_chain[method]
@@ -162,9 +161,15 @@ module Callbacks
       end
       
       def call_method_chain(method)
+        result = nil
         @@_method_chain[method].each do |action|
-          self.send(action)
+          if action == self.class.new_method_name(method) 
+            result = self.send(action)
+          else
+            self.send(action)
+          end
         end
+        return result 
       end
     end
 
