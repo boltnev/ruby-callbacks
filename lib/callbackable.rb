@@ -1,5 +1,46 @@
 module Callbackable
-
+  
+  # module Callbackable allows to add callbacks
+  # before and after methods  
+  # 
+  # == Example
+  # require "callbackable"
+  # 
+  # class Cat 
+  #   include Callbackable
+  # 
+  #   attr_accessor :name, :colour
+  # 
+  #   callback :after, :eat, :play
+  #   callback :before, :eat, :sleep
+  #
+  #   def initialize(name, colour)
+  #     @name = name
+  #     @colour = colour
+  #   end
+  #     
+  #   def sleep
+  #     puts "# {@name} the cat is sleeping"
+  #   end
+  # 
+  #   def eat
+  #     puts "# {@name} the cat  is eating"
+  #   end
+  # 
+  #   def play
+  #     puts "# {@name} the cat  is playing"
+  #   end
+  #  
+  #   run_callbacks
+  # end
+  #
+  # kitty = Cat.new("Kitty", "black")
+  #
+  # kitty.eat 
+  # # => Kitty the cat is sleeping
+  # # => Kitty the cat is eating
+  # # => Kitty the cat is playing
+  
   class UnknownEventException < Exception; end
   
   # md5 for word "method"
@@ -16,7 +57,19 @@ module Callbackable
       end
 
       # allows to add a callback to already initialized class
-      # TODO: document
+      # class Cat 
+      #   
+      #   def purr
+      #     #purr
+      #   end
+      #   
+      #   def sleep
+      #     #sleep
+      #   end
+      # end
+      #
+      # Cat.add_callback(:after, :purr, :sleep)
+      # Cat.new.purr # purr, then sleep
       def self.add_callback(event, method, callback)
         if callbacks_exist? method 
           callback(event, method, callback)
@@ -67,8 +120,6 @@ module Callbackable
       
       # run all callbacks. 
       # call it after all methods defined
-      # For example
-      # TODO:example
       def self.run_callbacks
         @@_method_chain.each_key do |method|
           alias_method new_method_name(method), method 
