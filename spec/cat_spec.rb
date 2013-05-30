@@ -108,4 +108,21 @@ describe Cat do
     end    
   
   end
+
+  context "with cycled callbacks" do
+    before(:all) do 
+      Cat.add_callback(:after, :sleep, :purr)
+      Cat.add_callback(:after, :purr, :sleep)
+    end
+    
+    after(:all) do
+      Cat.del_callback(:sleep, :purr)
+      Cat.del_callback(:purr, :sleep)
+    end
+    
+    it "cycles on cycled callback call" do
+      expect { cat.sleep }.to raise_error(SystemStackError) 
+    end
+
+  end
 end
