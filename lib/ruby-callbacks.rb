@@ -39,7 +39,7 @@
 #   #   => Kitty the cat is eating
 #   #   => Kitty the cat is playing
 
-module Callbackable
+module Callbacks
   
   
   class UnknownEventException < Exception; end

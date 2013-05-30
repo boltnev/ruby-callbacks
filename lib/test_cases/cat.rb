@@ -1,7 +1,7 @@
-require "callbackable"
+require "ruby-callbacks"
 
 class Cat 
-  include Callbackable
+  include Callbacks
 
   attr_accessor :name, :colour
   attr_reader :method_calls
