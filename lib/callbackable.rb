@@ -30,7 +30,6 @@
 #       puts "#{@name} the cat  is playing"
 #     end
 #    
-#     run_callbacks
 #   end
 #  
 #   kitty = Cat.new("Kitty", "black")
@@ -122,14 +121,6 @@ module Callbackable
           alias_method method, new_method_name(method)
           @@_callbacks_running.delete_if {|m| m == method}
           @@_method_chain[method] = nil
-        end
-      
-        # run all callbacks. 
-        # call it after all methods defined
-        def run_callbacks
-          @@_method_chain.each_key do |method|
-            run_callback(method)
-          end
         end
         
         def run_callback(method)
