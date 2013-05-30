@@ -3,10 +3,10 @@
 # 
 # == Example
 #
-#   require "callbackable"
+#   require "ruby-callbacks"
 #   
 #   class Cat 
-#     include Callbackable
+#     include Callbacks
 #   
 #     attr_accessor :name, :colour
 #   
@@ -41,7 +41,6 @@
 
 module Callbacks
   
-  
   class UnknownEventException < Exception; end
   
   # md5 for word "method"
@@ -59,7 +58,9 @@ module Callbacks
 
       # allows to add a callback to already initialized class
       # == Example 
-      #   class Cat 
+      #   class Cat
+      #     include Callbacks
+      #  
       #     def purr
       #       # purr
       #     end
@@ -82,6 +83,22 @@ module Callbacks
 
       # Delete existing callback
       # if callback == nil deletes all callbacks on given *method*
+      # == Example 
+      #   class Cat 
+      #     include Callbacks
+      #     callback :after, :purr, :sleep
+      #     def purr
+      #       # purr
+      #     end
+      #     
+      #     def sleep
+      #       # sleep
+      #     end
+      #   end
+      #   
+      #   Cat.callbacks_exist?(:purr) # => true
+      #   Cat.del_callback(:purr)
+      #   Cat.callbacks_exist?(:purr) # => false
       def self.del_callback(method, callback = nil)
         if callback
           @@_method_chain[method].delete_if{|c| c == callback }
@@ -171,8 +188,7 @@ module Callbacks
         end
         return result 
       end
+      
     end
-
   end
-
 end
