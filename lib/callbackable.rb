@@ -52,7 +52,7 @@ module Callbackable
 
     base.class_eval do 
       @@_method_chain = Hash.new
-    
+      @@_callbacks_running = Array.new
       # show current_method_chain
       def self.method_chain
         @@_method_chain
@@ -76,13 +76,8 @@ module Callbackable
         if callbacks_exist? method 
           callback(event, method, callback)
         else
-          callback(event, method, callback)
-          alias_method new_method_name(method), method
-          undef_method method 
-          
-          define_method method do
-            call_method_chain(method)
-          end
+          callback(event, method, callback)        
+          run_callback(method)
         end
       end
 
@@ -108,6 +103,13 @@ module Callbackable
       end
       
       class << self 
+        def method_added(method)
+          if callbacks_exist?(method) && !@@_callbacks_running.include?(method)
+            run_callback(method)
+          end
+          #puts "#{method} => callbacked => #{@@_method_chain[method]}"
+        end
+        
         private
         # Register new callback 
         # See main example
@@ -118,6 +120,7 @@ module Callbackable
         def del_all_callbacks(method)
           undef_method method
           alias_method method, new_method_name(method)
+          @@_callbacks_running.delete_if {|m| m == method}
           @@_method_chain[method] = nil
         end
       
@@ -130,9 +133,12 @@ module Callbackable
         end
         
         def run_callback(method)
+          return if @@_callbacks_running.include? method
           alias_method new_method_name(method), method 
           undef_method method 
-        
+          
+          @@_callbacks_running.push method
+          
           define_method method do
             call_method_chain(method)
           end          

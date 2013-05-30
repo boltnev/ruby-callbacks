@@ -43,5 +43,4 @@ class Cat
     @method_calls[__method__] = Time.now
   end
   
-  run_callbacks
 end
